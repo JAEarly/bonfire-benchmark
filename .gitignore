@@ -1,0 +1,6 @@
+/*.egg-info/
+/data/
+__pycache__/
+/models/
+/out/
+/.idea/
