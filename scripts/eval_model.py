@@ -48,7 +48,7 @@ def run_evaluation():
 def evaluate(n_repeats, trainer, random_state=5):
     results_arr = np.empty((n_repeats, 3), dtype=object)
     r = 0
-    for train_dataset, val_dataset, test_dataset in trainer.dataset_clz.create_datasets(random_state=random_state):
+    for train_dataset, val_dataset, test_dataset in trainer.dataset_clz.dataset_folder_iter(random_state=random_state):
         print('Repeat {:d}/{:d}'.format(r + 1, n_repeats))
 
         train_dataloader = trainer.create_dataloader(train_dataset, True, 0)

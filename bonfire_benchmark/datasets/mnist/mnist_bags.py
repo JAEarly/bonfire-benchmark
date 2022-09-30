@@ -6,8 +6,8 @@ from torch.utils.data import random_split
 from torchvision import transforms
 from torchvision.datasets import MNIST
 
-from bonfire.main.data.mil_dataset import MilDataset
-from bonfire.main.train.metrics import ClassificationMetric
+from bonfire.dataset.mil_dataset import MilDataset
+from bonfire.train.metrics import ClassificationMetric
 
 
 def load_mnist(train):
@@ -66,8 +66,8 @@ class SingleDigitMnistBagsDataset(MilDataset):
     n_classes = 2
 
     @classmethod
-    def create_datasets(cls, mean_bag_size=30, var_bag_size=2, num_train_bags=2500, num_test_bags=1000,
-                        random_state=None):
+    def dataset_folder_iter(cls, mean_bag_size=30, var_bag_size=2, num_train_bags=2500, num_test_bags=1000,
+                            random_state=None):
         if random_state is not None:
             np.random.seed(seed=random_state)
         train_mnist_dataset, val_mnist_dataset, test_mnist_dataset = split_mnist_datasets(random_state=random_state)
@@ -183,7 +183,8 @@ class FourMnistBagsDataset(MilDataset):
             yield train_split, val_split, test_split
 
     @classmethod
-    def create_datasets(cls, mean_bag_size=30, var_bag_size=2, num_train_bags=2500, num_test_bags=1000, random_state=5):
+    def dataset_folder_iter(cls, n_folds, mean_bag_size=30, var_bag_size=2, num_train_bags=2500,
+                            num_test_bags=1000, random_state=5):
         np.random.seed(random_state)
 
         # Load original mnist dataset (training set only)
@@ -191,6 +192,7 @@ class FourMnistBagsDataset(MilDataset):
 
         # Create actual MIL datasets from the mnist dataset
         #  The mnist dataset is split in train/val/test first to ensure no overlap between the MIL datasets
+        f = 0
         for train_split, val_split, test_split in cls.get_dataset_splits(mnist_dataset, random_state=random_state):
             train_dataset = cls._create_dataset(mean_bag_size, var_bag_size, num_train_bags,
                                                 mnist_dataset.data[train_split], mnist_dataset.targets[train_split],
@@ -202,6 +204,9 @@ class FourMnistBagsDataset(MilDataset):
                                                mnist_dataset.data[test_split], mnist_dataset.targets[test_split],
                                                random_state=random_state)
             yield train_dataset, val_dataset, test_dataset
+            f += 1
+            if f == n_folds:
+                break
 
     @classmethod
     def create_complete_dataset(cls):
@@ -338,8 +343,8 @@ class CountMnistBagsDataset(MilDataset):
     n_classes = 1
 
     @classmethod
-    def create_datasets(cls, mean_bag_size=15, var_bag_size=1, num_train_bags=2500, num_test_bags=1000,
-                        seed=None):
+    def dataset_folder_iter(cls, mean_bag_size=15, var_bag_size=1, num_train_bags=2500, num_test_bags=1000,
+                            seed=None):
         if seed is not None:
             np.random.seed(seed=seed)
         train_mnist_dataset, val_mnist_dataset, test_mnist_dataset = split_mnist_datasets(random_state=seed)

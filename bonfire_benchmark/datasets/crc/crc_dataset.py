@@ -9,8 +9,8 @@ from PIL import Image
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from torchvision import transforms
 
-from bonfire.main.data.mil_dataset import MilDataset
-from bonfire.main.train.metrics import ClassificationMetric
+from bonfire.dataset.mil_dataset import MilDataset
+from bonfire.train.metrics import ClassificationMetric
 
 cell_types = ['others', 'inflammatory', 'fibroblast', 'epithelial']
 binary_clz_names = ['non-epithelial', 'epithelial']
@@ -67,7 +67,7 @@ class CrcDataset(MilDataset):
             yield train_split, val_split, test_split
 
     @classmethod
-    def create_datasets(cls, patch_size=27, augment_train=True, random_state=5, verbose=False, num_test_bags=None):
+    def dataset_folder_iter(cls, patch_size=27, augment_train=True, random_state=5, verbose=False, num_test_bags=None):
         bags, targets, ids = load_crc_bags(patch_size, verbose=verbose)
 
         for train_split, val_split, test_split in cls.get_dataset_splits(bags, targets, random_state=random_state):
@@ -233,5 +233,5 @@ def _get_instance_targets_for_bags(bags, instance_target_dict):
 
 
 if __name__ == "__main__":
-    for _ in CrcDataset.create_datasets(verbose=True):
+    for _ in CrcDataset.dataset_folder_iter(verbose=True):
         exit(0)

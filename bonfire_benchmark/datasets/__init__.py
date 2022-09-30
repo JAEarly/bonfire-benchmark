@@ -1,6 +1,5 @@
-from bonfire.benchmark.datasets.crc.crc_dataset import CrcDataset
-# from .dgr.dgr_dataset import DgrDataset
-from bonfire.benchmark.datasets.mnist import FourMnistBagsDataset
+from bonfire_benchmark.datasets.crc.crc_dataset import CrcDataset
+from bonfire_benchmark.datasets.mnist.mnist_bags import FourMnistBagsDataset
 
 dataset_clzs = [CrcDataset, FourMnistBagsDataset]
 dataset_names = [d.name for d in dataset_clzs]

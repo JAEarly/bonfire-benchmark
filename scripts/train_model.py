@@ -1,10 +1,11 @@
 import argparse
 
-from bonfire import dataset_names
-from bonfire import model_names
-from bonfire import create_trainer_from_names
-from bonfire import get_device
-from bonfire import parse_yaml_benchmark_config, parse_training_config
+from bonfire_benchmark.datasets import dataset_names, get_dataset_clz
+from bonfire_benchmark.models import model_names, get_model_clz
+from bonfire.train.trainer import Trainer
+from bonfire.util import get_device
+from bonfire.util.config_util import parse_yaml_config
+from bonfire_benchmark import get_config_path
 
 device = get_device()
 
@@ -23,11 +24,14 @@ def run_training():
     dataset_name, model_name, n_repeats = parse_args()
 
     # Parse wandb config and get training config for this model
-    config = parse_yaml_benchmark_config(dataset_name)
-    training_config = parse_training_config(config['training'], model_name)
+    config_path = get_config_path(dataset_name)
+    config = parse_yaml_config(config_path, model_name)
+    print(config)
 
     # Create trainer
-    trainer = create_trainer_from_names(device, model_name, dataset_name)
+    model_clz = get_model_clz(dataset_name, model_name)
+    dataset_clz = get_dataset_clz(dataset_name)
+    trainer = Trainer(device, model_clz, dataset_clz)
 
     # Log
     print('Starting {:s} training'.format(dataset_name))
@@ -36,7 +40,7 @@ def run_training():
     print('  Training {:d} models'.format(n_repeats))
 
     # Start training
-    trainer.train_multiple(training_config, n_repeats=n_repeats)
+    trainer.train_multiple(config, n_repeats=n_repeats)
 
 
 if __name__ == "__main__":
