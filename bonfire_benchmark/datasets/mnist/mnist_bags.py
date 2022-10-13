@@ -61,7 +61,6 @@ def show_instance(instance):
 class SingleDigitMnistBagsDataset(MilDataset):
 
     name = 'SingleDigitMNIST'
-    d_in = 800
     n_expected_dims = 4  # i x c x h x w
     n_classes = 2
 
@@ -163,8 +162,6 @@ class SingleDigitMnistBagsDataset(MilDataset):
 class FourMnistBagsDataset(MilDataset):
 
     name = 'four-mnist'
-    # TODO d_in shouldn't be defined in the dataset class
-    d_in = 800
     n_expected_dims = 4  # i x c x h x w
     n_classes = 4
     metric_clz = ClassificationMetric
@@ -339,7 +336,6 @@ class FourMnistBagsDataset(MilDataset):
 class CountMnistBagsDataset(MilDataset):
 
     name = 'CountMnistBags'
-    d_in = 800
     n_expected_dims = 4  # i x c x h x w
     n_classes = 1
 
