@@ -4,7 +4,7 @@ from bonfire_benchmark.datasets import dataset_names, get_dataset_clz
 from bonfire_benchmark.models import model_names, get_model_clz
 from bonfire.train.trainer import Trainer
 from bonfire.util import get_device
-from bonfire.util.config_util import parse_yaml_config
+from bonfire.util.config import parse_yaml_config
 from bonfire_benchmark import get_config_path
 
 device = get_device()
